@@ -1,121 +1,220 @@
+// Flutter imports:
+import '/pages/crop_to_main_editor.dart';
+import '/pages/design_examples/design_example.dart';
+import '/pages/frame_example.dart';
+import '/pages/zoom_move_editor_example.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:pro_image_editor/pro_image_editor.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+// Package imports:
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-void main() {
+import '/pages/firebase_supabase_example.dart';
+import '/pages/import_export_example.dart';
+import '/pages/pick_image_example.dart';
+import '/pages/selectable_layer_example.dart';
+// Project imports:
+import '/utils/example_constants.dart';
+import 'pages/custom_appbar_bottombar_example.dart';
+import 'pages/default_example.dart';
+import 'pages/generation_configs_example.dart';
+import 'pages/google_font_example.dart';
+import 'pages/image_format_convert_example.dart';
+import 'pages/movable_background_image.dart';
+import 'pages/reorder_layer_example.dart';
+import 'pages/round_cropper_example.dart';
+import 'pages/signature_drawing_example.dart';
+import 'pages/standalone_example.dart';
+import 'pages/stickers_example.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: 'SUPABASE_URL',
+    anonKey: 'SUPABASE_ANON_KEY',
+    debug: false,
+  );
+
   runApp(const MyApp());
 }
 
+/// The root widget of the application.
 class MyApp extends StatelessWidget {
+  /// Creates a new [MyApp] widget.
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     // return MaterialApp(
-    //   title: 'Flutter Demo',
+    //   title: 'Pro-Image-Editor',
     //   theme: ThemeData(
-    //     colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    //     colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue.shade800),
     //     useMaterial3: true,
     //   ),
-    //   home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    //   debugShowCheckedModeBanner: false,
+    //   home: const MyHomePage(),
     // );
-    return ShadApp.material(
-            title: 'Flutter Demo',
+     return ShadApp.material(
+      title: 'Pro-Image-Editor',
       theme: ShadThemeData(
 
         colorScheme: ShadColorScheme.fromName('zinc'),
-        brightness: Brightness.dark,
+        brightness: Brightness.light,
         // useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'CatMe'),
+      debugShowCheckedModeBanner: false,
+      home: const MyHomePage(),
     );
   }
 }
 
+/// The home page of the application.
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+  /// Creates a new [MyHomePage] widget.
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  late final ScrollController _scrollCtrl;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  final List<Widget> _examples = [
+    const DefaultExample(),
+    const DesignExample(),
+    const StandaloneExample(),
+    const CropToMainEditorExample(),
+    const SignatureDrawingExample(),
+    const StickersExample(),
+    const FirebaseSupabaseExample(),
+    const ReorderLayerExample(),
+    const RoundCropperExample(),
+    const SelectableLayerExample(),
+    const GenerationConfigsExample(),
+    const PickImageExample(),
+    const GoogleFontExample(),
+    const CustomAppbarBottombarExample(),
+    const ImportExportExample(),
+    const MovableBackgroundImageExample(),
+    const FrameExample(),
+    const ZoomMoveEditorExample(),
+    const ImageFormatConvertExample(),
+  ];
+
+  @override
+  void initState() {
+    _scrollCtrl = ScrollController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollCtrl.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+    return ExampleConstants(
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: ExtendedPopScope(
+          child: Scaffold(
+            body: SafeArea(child: _buildCard()),
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  Widget _buildCard() {
+    return Center(
+      child: LayoutBuilder(builder: (context, constraints) {
+        if (constraints.maxWidth >= 750) {
+          return Container(
+            constraints: const BoxConstraints(maxWidth: 700),
+            child: Card.outlined(
+              margin: const EdgeInsets.all(16),
+              clipBehavior: Clip.hardEdge,
+              child: _buildExamples(),
+            ),
+          );
+        } else {
+          return _buildExamples();
+        }
+      }),
+    );
+  }
+
+  Widget _buildExamples() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Examples',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              RichText(
+                  text: TextSpan(
+                style: const TextStyle(color: Colors.black87),
+                children: [
+                  const TextSpan(text: 'Check out the example code '),
+                  TextSpan(
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () async {
+                        String path =
+                            'https://github.com/hm21/pro_image_editor/tree/stable/example/lib/pages';
+                        Uri url = Uri.parse(path);
+                        if (!await launchUrl(url)) {
+                          throw Exception('Could not launch $url');
+                        }
+                      },
+                    text: 'here',
+                    style: const TextStyle(color: Colors.blue),
+                  ),
+                  const TextSpan(text: '.'),
+                ],
+              )),
+            ],
+          ),
+        ),
+        const Divider(height: 1),
+        Flexible(
+          child: Scrollbar(
+            controller: _scrollCtrl,
+            thumbVisibility: true,
+            trackVisibility: true,
+            child: SingleChildScrollView(
+              controller: _scrollCtrl,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: ListTile.divideTiles(
+                  context: context,
+                  tiles: _examples,
+                ).toList(),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
+
+/// It's handy to then extract the Supabase client in a variable for later uses
+final supabase = Supabase.instance.client;
